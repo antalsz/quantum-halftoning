@@ -12,6 +12,11 @@ import GHC.Float
 import Control.Monad
 import System.Random
 
+import Data.Foldable
+import qualified Data.Vector.Storable.Mutable as MV
+import Graphics.Gloss
+import Control.Concurrent
+
 --------------------------------------------------------------------------------
 
 type 𝔹 = Bool
@@ -57,3 +62,21 @@ noise p n = Image <$> genericReplicateM n (genericReplicateM n $ coin p)
 
 qhalftone ∷ ℕ → Image ℝ → Q (Image 𝔹)
 qhalftone n = fmap coalesce . traverse (\p → noise (probability (n*n) p) n)
+
+--------------------------------------------------------------------------------
+
+main ∷ IO ()
+main = do
+  vec ← MV.new (2000*4)
+  traverse_ (uncurry $ MV.write vec) (zip [0 .. MV.length vec - 1] (cycle [128,128,128,255]))
+  
+  forkIO $ do
+    threadDelay 3000000
+    traverse_ (uncurry $ MV.write vec) (zip [0 .. MV.length vec - 1] (cycle [128,0,0,255]))
+
+  let bitmap = bitmapOfForeignPtr 20 100
+                                  (BitmapFormat TopToBottom PxRGBA)
+                                  (fst $ MV.unsafeToForeignPtr0 vec)
+                                  False
+    
+  animate (InWindow "Image" (300,300) (50,50)) blue (const bitmap)
