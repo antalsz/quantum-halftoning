@@ -114,16 +114,37 @@ refreshRandom img vec = uncurry (refresh img vec) =<< randomIndex img
 
 --------------------------------------------------------------------------------
 
-probability ∷ ℕ → ℝ → ℝ
-probability 1 x | x < 1/2   = 0
-                | otherwise = 1
-probability 2 x | x < 15/34 = 0
-                | x < 19/34 = 0.5
-                | otherwise = 1
--- LIES
-probability 4 x | x < 1/3   = 0
-                | x < 2/3   = 0.5
-                | otherwise = 1
+probability ∷ ℕ → Maybe (ℝ → ℝ)
+probability 1  = Just $
+  \case x | x < 1/2   → 0
+          | otherwise → 1
+
+probability 4  = Just $
+  \case x | x < 1/3   → 0
+          | x < 2/3   → 0.5
+          | otherwise → 1
+
+probability 9  = Just $
+  \case x | x < 1/3   → 0
+          | x < 2/3   → 0.5
+          | otherwise → 1
+
+probability 16 = Just $
+  \case x | x < 1/3   → 0
+          | x < 2/3   → 0.5
+          | otherwise → 1
+
+probability 25 = Just $
+  \case x | x < 1/3   → 0
+          | x < 2/3   → 0.5
+          | otherwise → 1
+
+probability 36 = Just $
+  \case x | x < 1/3   → 0
+          | x < 2/3   → 0.5
+          | otherwise → 1
+
+probability _  = Nothing
 
 --------------------------------------------------------------------------------
 
@@ -173,7 +194,8 @@ readGrayscale file = do
 
 mainWith ∷ ℕ → Int → FilePath → IO ()
 mainWith n freq file = do
-  probabilities ← either die (pure . expandWith n (probability n))
+  coinWeight    ← maybe (die "Unknown expansion factor") pure $ probability (n*n)
+  probabilities ← either die (pure . expandWith n coinWeight)
                     =<< runExceptT (readGrayscale file)
   bitVector     ← build probabilities
   let bitmap = bitmapOfForeignPtr (width probabilities) (height probabilities)
@@ -185,7 +207,9 @@ mainWith n freq file = do
     threadDelay   freq
     refreshRandom probabilities bitVector
   
-  animate (InWindow "Quantum Halftoning" (width probabilities, height probabilities) (100,100))
+  animate (InWindow "Quantum Halftoning"
+                    (width probabilities, height probabilities)
+                    (100,100))
           (greyN 0.5)
           (const bitmap)
 
