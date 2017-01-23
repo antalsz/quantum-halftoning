@@ -99,8 +99,8 @@ refresh ∷ Image ℝ → MV.IOVector Word8 → Int → Int → IO ()
 refresh img vec x y = do
   let index = x + width img * y
   value ← coin (at img x y) <&> \case
-             True  → 0
-             False → 255
+             True  → 255
+             False → 0
   MV.write vec (4*index + 0) value
   MV.write vec (4*index + 1) value
   MV.write vec (4*index + 2) value
