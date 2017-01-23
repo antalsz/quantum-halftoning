@@ -215,8 +215,8 @@ readGrayscale file = do
 
 mainWith ∷ ℕ → Int → FilePath → IO ()
 mainWith n freq file = do
-  coinWeight    ← maybe (die "Unknown expansion factor") pure $ probability (n*n)
-  probabilities ← either die (pure . expandWith n coinWeight)
+  weightedCoin  ← maybe (die "Unknown expansion factor") pure $ probability (n*n)
+  probabilities ← either die (pure . expandWith n weightedCoin)
                     =<< runExceptT (readGrayscale file)
   bitVector     ← build probabilities
   let bitmap = bitmapOfForeignPtr (width probabilities) (height probabilities)
