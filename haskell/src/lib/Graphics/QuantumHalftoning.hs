@@ -1,5 +1,7 @@
 {-# LANGUAGE TypeSynonymInstances, TypeFamilies, RecordWildCards, LambdaCase, UnicodeSyntax #-}
 
+module Graphics.QuantumHalftoning where
+
 import Data.Foldable
 import Control.Monad
 
