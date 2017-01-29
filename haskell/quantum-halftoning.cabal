@@ -18,7 +18,14 @@ source-repository head
   location: https://github.com/spectordon/quantum-halftoning/haskell
 
 library
-  exposed-modules:     Graphics.QuantumHalftoning
+  exposed-modules:     Graphics.QuantumHalftoning.Util
+                     , Graphics.QuantumHalftoning.Random
+                     , Graphics.QuantumHalftoning.Image
+                     , Graphics.QuantumHalftoning.Mutable
+                     , Graphics.QuantumHalftoning.MutualInformation
+                     , Graphics.QuantumHalftoning.ImageFiles
+                     , Graphics.QuantumHalftoning.CLI
+                     , Graphics.QuantumHalftoning
   
   build-depends:       base        >= 4.7 && < 5
                      , mtl         ==2.2.*

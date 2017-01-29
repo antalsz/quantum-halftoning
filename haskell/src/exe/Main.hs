@@ -1,6 +1,6 @@
-module Main where
+module Main (main) where
 
-import qualified Graphics.QuantumHalftoning as QH
+import qualified Graphics.QuantumHalftoning.CLI as QH
 
 main :: IO ()
 main = QH.main
