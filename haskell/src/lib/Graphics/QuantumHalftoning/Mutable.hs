@@ -37,7 +37,8 @@ build ∷ forall m bw.
 build probs@Image{..} = castWith (sym $ mresult @m @(Image m bw)) $ do
   pixels' ← castWith (mresult @m @(GVector m bw)) . new @m @bw $ width*height
   let bw = probs{pixels=pixels'}
-  forCoordinates_ width height $ \x y → castWith (mresult @m @()) $ refresh probs bw x y
+  forCoordinates_ width height $ \x y →
+    castWith (mresult @m @()) $ refresh probs bw x y
   pure bw
 
 refresh ∷ forall m bw.

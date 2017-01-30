@@ -1,4 +1,6 @@
-{-# LANGUAGE KindSignatures, DataKinds, GADTs, TypeApplications, AllowAmbiguousTypes, ScopedTypeVariables, TypeFamilies, TypeOperators, FlexibleContexts, RecordWildCards, UnicodeSyntax #-}
+{-# LANGUAGE KindSignatures, DataKinds, GADTs, TypeApplications,
+             AllowAmbiguousTypes, ScopedTypeVariables, TypeFamilies,
+             TypeOperators, FlexibleContexts, RecordWildCards, UnicodeSyntax #-}
 
 module Graphics.QuantumHalftoning.Image (
   Image(..),
@@ -114,7 +116,8 @@ set img x y a =
 {-# INLINABLE set #-}
 
 randomIndex ∷ Image m ℝ → IO (Int,Int)
-randomIndex Image{..} = (,) <$> randomRIO (0, width-1) <*> randomRIO (0, height-1)
+randomIndex Image{..} =
+  (,) <$> randomRIO (0, width-1) <*> randomRIO (0, height-1)
 
 forCoordinates_ ∷ (Enum x, Num x, Enum y, Num y, Applicative f)
                 ⇒ x → y → (x → y → f ()) → f ()
@@ -123,11 +126,14 @@ forCoordinates_ xSize ySize act =
     for_ [0..xSize-1] $ \x →
       act x y
 {-# INLINABLE forCoordinates_ #-}
-{-# SPECIALIZE forCoordinates_ ∷ Int → Int → (Int → Int → ST s ()) → ST s () #-}
-{-# SPECIALIZE forCoordinates_ ∷ Int → Int → (Int → Int → IO   ()) → IO   () #-}
+{-# SPECIALIZE forCoordinates_ ∷
+                 Int → Int → (Int → Int → ST s ()) → ST s () #-}
+{-# SPECIALIZE forCoordinates_ ∷
+                 Int → Int → (Int → Int → IO   ()) → IO   () #-}
 
 expandWith ∷ forall m a. (KnownMutability m, Storable a)
-           ⇒ ℕ → (a → a) → Image 'Immutable a → GResult m (Image m a)
+           ⇒ ℕ → (a → a) → Image 'Immutable a
+           → GResult m (Image m a)
 expandWith nNat f img@Image{..} =
   let n | nNat > fromIntegral (maxBound ∷ Int) =
           error "expandWith: scale factor out of range"

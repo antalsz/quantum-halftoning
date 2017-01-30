@@ -23,15 +23,16 @@ import Text.Read
 
 --------------------------------------------------------------------------------
 
-mainWith ∷ ℕ → Int → FilePath → IO ()
-mainWith n freq file = do
-  weightedCoin  ← maybe (die "Unknown expansion factor") pure $ probability (n*n)
+mainWith ∷ ℕ → FilePath → FilePath → IO ()
+mainWith n infile outfile = do
+  weightedCoin  ← maybe (die "Unknown expansion factor") pure
+                    $ probability (n*n)
   probabilities ← either die (pure . expandWith @'Immutable n weightedCoin)
-                    =<< runExceptT (readGrayscale file)
+                    =<< runExceptT (readGrayscale infile)
   halftoned     ← build @'MutableIO probabilities
   halftonedData ← V.unsafeFreeze $ pixels halftoned
   writePng @Pixel8
-           "test.png"
+           outfile
            JP.Image { imageWidth  = width halftoned
                     , imageHeight = height halftoned
                     , imageData   = halftonedData }
@@ -40,12 +41,12 @@ data CommandLineError = ParseError String
                       | UsageError
                       deriving (Eq, Ord, Show, Read)
 
-parseArgs ∷ [String] → Either CommandLineError (ℕ, Int, FilePath)
-parseArgs [nStr, freqStr, file] =
+parseArgs ∷ [String] → Either CommandLineError (ℕ, FilePath, FilePath)
+parseArgs [nStr, infile, outfile] =
   let parse what = maybe (Left $ ParseError what) Right . readMaybe
   in (,,) <$> parse "expansion factor" nStr
-          <*> parse "refresh rate"     freqStr
-          <*> pure                     file
+          <*> pure                     infile
+          <*> pure                     outfile
 parseArgs _ =
   Left UsageError
 
@@ -55,4 +56,4 @@ main = uncurry3 mainWith =<< either (die <=< err) pure . parseArgs =<< getArgs
           pure $ "Could not parse " ++ what
         err UsageError        = do
           name ← getProgName
-          pure $ "Usage: " ++ name ++ " N FREQ FILE"
+          pure $ "Usage: " ++ name ++ " N INFILE OUTFILE"

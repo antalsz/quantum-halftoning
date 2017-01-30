@@ -1,6 +1,8 @@
 {-# LANGUAGE UnicodeSyntax #-}
 
-module Graphics.QuantumHalftoning.Util (𝔹, ℕ, ℝ, (<&>), curry3, uncurry3) where
+module Graphics.QuantumHalftoning.Util (
+  𝔹, ℕ, ℝ, (<&>), curry3, uncurry3
+) where
 
 import Numeric.Natural
 
