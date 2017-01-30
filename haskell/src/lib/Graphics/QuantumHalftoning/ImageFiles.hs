@@ -1,4 +1,4 @@
-{-# LANGUAGE TypeSynonymInstances, TypeFamilies,
+{-# LANGUAGE DataKinds, TypeSynonymInstances, TypeFamilies,
              RecordWildCards, LambdaCase, UnicodeSyntax #-}
 
 module Graphics.QuantumHalftoning.ImageFiles (
@@ -50,12 +50,12 @@ plainGrayscaleVector ∷ (ToGrayscale a, a ~ PixelBaseComponent a)
 plainGrayscaleVector _ JP.Image{..} = V.map grayscale imageData
 {-# INLINABLE plainGrayscaleVector #-}
 
-grayscaleImage ∷ ToGrayscale a ⇒ Metadatas → JP.Image a → Image ℝ
+grayscaleImage ∷ ToGrayscale a ⇒ Metadatas → JP.Image a → Image 'Immutable ℝ
 grayscaleImage md img@JP.Image{..} = Image { width  = imageWidth
                                            , height = imageHeight
                                            , pixels = grayscaleVector md img }
 
-readGrayscale ∷ FilePath → ExceptT String IO (Image ℝ)
+readGrayscale ∷ FilePath → ExceptT String IO (Image 'Immutable ℝ)
 readGrayscale file = do
   (dimg, md) ← ExceptT $ readImageWithMetadata file
   case dimg of

@@ -1,4 +1,4 @@
-{-# LANGUAGE LambdaCase, UnicodeSyntax #-}
+{-# LANGUAGE DataKinds, TypeApplications, LambdaCase, UnicodeSyntax #-}
 
 module Graphics.QuantumHalftoning.CLI (
   mainWith, main,
@@ -12,10 +12,10 @@ import Graphics.QuantumHalftoning.ImageFiles
 
 import Control.Monad
 import Control.Monad.Except
-import Control.Concurrent
-import qualified Data.Vector.Storable.Mutable as MV
+import qualified Data.Vector.Storable as V
 
-import Graphics.Gloss
+import qualified Codec.Picture as JP
+import Codec.Picture hiding (Image(Image))
 
 import System.Environment
 import System.Exit
@@ -26,23 +26,15 @@ import Text.Read
 mainWith ∷ ℕ → Int → FilePath → IO ()
 mainWith n freq file = do
   weightedCoin  ← maybe (die "Unknown expansion factor") pure $ probability (n*n)
-  probabilities ← either die (pure . expandWith n weightedCoin)
+  probabilities ← either die (pure . expandWith @'Immutable n weightedCoin)
                     =<< runExceptT (readGrayscale file)
-  bitVector     ← build probabilities
-  let bitmap = bitmapOfForeignPtr (width probabilities) (height probabilities)
-                                  (BitmapFormat TopToBottom PxRGBA)
-                                  (fst $ MV.unsafeToForeignPtr0 bitVector)
-                                  False
-  
-  void . forkIO . forever $ do
-    threadDelay   freq
-    refreshRandom probabilities bitVector
-  
-  animate (InWindow "Quantum Halftoning"
-                    (width probabilities, height probabilities)
-                    (100,100))
-          (greyN 0.5)
-          (const bitmap)
+  halftoned     ← build @'MutableIO probabilities
+  halftonedData ← V.unsafeFreeze $ pixels halftoned
+  writePng @Pixel8
+           "test.png"
+           JP.Image { imageWidth  = width halftoned
+                    , imageHeight = height halftoned
+                    , imageData   = halftonedData }
 
 data CommandLineError = ParseError String
                       | UsageError
