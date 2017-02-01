@@ -1,12 +1,11 @@
 {-# LANGUAGE UnicodeSyntax #-}
 
 module Graphics.QuantumHalftoning.Util (
-  𝔹, ℕ, ℝ, (<&>), curry3, uncurry3
+  ℕ, ℝ, (<&>), interspersedTabulateM_
 ) where
 
 import Numeric.Natural
 
-type 𝔹 = Bool
 type ℕ = Natural
 type ℝ = Double
 
@@ -15,10 +14,8 @@ type ℝ = Double
 infixl 1 <&>
 {-# INLINABLE (<&>) #-}
 
-curry3 ∷ ((a,b,c) → d) → (a → b → c → d)
-curry3 f = \a b c → f (a,b,c)
-{-# INLINABLE curry3 #-}
-
-uncurry3 ∷ (a → b → c → d) → ((a,b,c) → d)
-uncurry3 f = \ ~(a,b,c) → f a b c
-{-# INLINABLE uncurry3 #-}
+interspersedTabulateM_ ∷ Applicative f ⇒ ℕ → f () → (ℕ → f ()) → f ()
+interspersedTabulateM_ n sep act = go 1 where
+  go i | i == n    = act i
+       | i <  n    = act i *> sep *> go (i+1)
+       | otherwise = pure ()
