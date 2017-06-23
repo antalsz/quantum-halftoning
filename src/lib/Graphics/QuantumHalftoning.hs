@@ -43,13 +43,13 @@ startingPixel Image    = randomBWPixel
 startingPixel AllWhite = const $ pure white
 startingPixel AllBlack = const $ pure black
 
-refresh ∷ (PrimMonad m, MonadRandom m, m ~ IO, BlackAndWhite px, Storable px)
+refresh ∷ (PrimMonad m, MonadRandom m, BlackAndWhite px, Storable px)
         ⇒ RefreshStyle → Canvas c (PrimState m) px → m ()
 refresh RefreshPixel = \canvas → refreshPixel canvas =<< randomIndex canvas
 refresh RefreshImage = refreshAllPixels
 
 quantumHalftone ∷ ( PrimMonad m, MonadRandom m
-                  , Grayscale ipx, BlackAndWhite opx, Storable opx, m ~ IO )
+                  , Grayscale ipx, BlackAndWhite opx, Storable opx )
                 ⇒ Parameters
                 → JP.Image ipx
                 → (∀c. ℕ → Canvas c (PrimState m) opx → m ())
