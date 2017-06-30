@@ -1,4 +1,3 @@
-{-# LANGUAGE GADTs #-}
 {-# LANGUAGE TypeApplications, RecordWildCards, LambdaCase, UnicodeSyntax #-}
 
 module Graphics.QuantumHalftoning.CLI (

@@ -1,6 +1,4 @@
-{-# LANGUAGE GADTs #-}
-{-# LANGUAGE DefaultSignatures, TypeSynonymInstances, ScopedTypeVariables,
-             LambdaCase, UnicodeSyntax #-}
+{-# LANGUAGE GADTs, UnicodeSyntax #-}
 
 module Graphics.QuantumHalftoning.Images (
   GrayscaleImage(..), toGrayscaleImage, readGrayscaleImage

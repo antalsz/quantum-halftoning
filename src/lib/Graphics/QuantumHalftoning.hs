@@ -1,4 +1,3 @@
-{-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE RankNTypes, RecordWildCards, UnicodeSyntax #-}
 
 module Graphics.QuantumHalftoning (
