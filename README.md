@@ -1,9 +1,8 @@
-# Schrödinger’s Zebra: Information Theory, Quantum Mechanics, and Halftoning — Source Code
+# Schrödinger’s Zebra: Applying Mutual Information Maximization to Graphical Halftoning — Source Code
 
-This code is the implementation of the quantum halftoning algorithm from the
-paper “Schrödinger’s Zebra: Information Theory, Quantum Mechanics, and
-Halftoning”, by Antal Spector-Zabusky and Donald Spector, submitted to
-[Bridges 2017].
+This code is the implementation of the quantum halftoning algorithm from
+“Schrödinger’s Zebra: Information Theory, Quantum Mechanics, and Halftoning”, by
+Antal Spector-Zabusky and Donald Spector, presented at [MaxEnt 2017].
 
 The program is written in [Haskell], and requires [GHC] 8.  It uses the [Stack]
 tool for installing dependencies (including GHC itself) and building.
@@ -52,7 +51,7 @@ With the short forms of the comand-line arguments, this can be run as
 This code is available under the permissive open-source 3-clause BSD license;
 see the `LICENSE` file for more information.
 
-[Bridges 2017]: http://bridgesmathart.org/bridges-2017/
-[Haskell]:      https://www.haskell.org/
-[GHC]:          https://www.haskell.org/ghc/
-[Stack]:        https://www.haskellstack.org/
+[MaxEnt 2017]: http://www.gis.des.ufscar.br/meetings/2017maxent/index.php
+[Haskell]:     https://www.haskell.org/
+[GHC]:         https://www.haskell.org/ghc/
+[Stack]:       https://www.haskellstack.org/
