@@ -1,2 +1,2 @@
 #!/bin/sh
-stack exec quantum-halftone -- "$@"
+stack --stack-yaml "$(dirname "$0")/stack.yaml" exec quantum-halftone -- "$@"
